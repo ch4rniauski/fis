@@ -198,13 +198,12 @@ static void MakeConclusions(TableStatistics addStats, TableStatistics mulStats, 
 
 static void PerformComparativeAnalysis(List<RingAnalysisResult> results)
 {
-    Console.WriteLine("\nТаблица коэффициентов разброса:");
-    Console.WriteLine("m\tСложение\tУмножение\tРазность");
+    Console.WriteLine("\nТаблица диаметров разброса:");
+    Console.WriteLine("m\tСложение\tУмножение");
 
     foreach (var result in results)
     {
-        var diff = result.MultiplicationSpread - result.AddScatterDiameter;
-        Console.WriteLine($"{result.M}\t{result.AddScatterDiameter}\t\t{result.MultiplicationSpread}\t\t{diff}");
+        Console.WriteLine($"{result.M}\t{result.AddScatterDiameter}\t\t{result.MultiplicationSpread}");
     }
 
     Console.WriteLine("\nЗакономерности:");
