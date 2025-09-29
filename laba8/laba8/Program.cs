@@ -1,34 +1,84 @@
-﻿int[] testValues = [2, 3, 5, 6, 7, 8, 19, 25, 100, 101, 194, 727, 971, 1987, 23687, 27143, 34919, 34921];
+﻿using System.Numerics;
 
-foreach (var m in testValues)
+Console.Write("Введите число p: ");
+var m = int.Parse(Console.ReadLine()!);
+
+CheckFermat(m);
+
+Console.WriteLine("Проверка обратного утверждения малой теоремы Ферма для чисел до 5000:");
+CheckConverseFermat(5000);
+
+void CheckFermat(int p)
 {
-    Console.WriteLine($"Число {m} {(IsPrime(m)
-        ? "простое"
-        : "составное")}");
+    Console.WriteLine($"\nПроверка малой теоремы Ферма для p = {p}:");
     
-    var factors = PrimeFactors(m);
-    
-    Console.WriteLine($"Простые множители: {string.Join(", ", factors)}\n");
+    for (var a = 1; a < p; a++)
+    {
+        var result = BigInteger.ModPow(a, p - 1, p);
+        Console.WriteLine($"\ta = {a}, a^{p - 1} = {result} (mod {p})");
+
+        if (result != 1)
+        {
+            Console.WriteLine("Ошибка! Малая теорема Ферма не выполнена\n");
+            
+            return;
+        }
+    }
+    Console.WriteLine("Все числа удовлетворяют малой теореме Ферма (значения равны 1)\n");
 }
 
-bool IsPrime(int m)
+void CheckConverseFermat(int maxM)
 {
-    switch (m)
+    for (var m = 2; m <= maxM; m++)
+    {
+        var holdsForAllCoprimeA = true;
+
+        for (var a = 1; a < m; a++)
+        {
+            if (BigInteger.GreatestCommonDivisor(a, m) != 1)
+            {
+                continue;
+            }
+
+            var res = BigInteger.ModPow(a, m - 1, m);
+            
+            if (res != 1)
+            {
+                holdsForAllCoprimeA = false;
+                
+                break;
+            }
+        }
+
+        if (holdsForAllCoprimeA && !IsPrime(m))
+        {
+            var factorization = PrimeFactorization(m);
+            
+            Console.WriteLine($"\tЧисло {m} составное, но для всех взаимно простых a выполняется a^(m-1) = 1 (mod {m})");
+            Console.WriteLine($"\tРазложение: {string.Join(" * ", factorization)}\n");
+        }
+    }
+}
+
+bool IsPrime(int x)
+{
+    switch (x)
     {
         case < 2:
             return false;
         case 2:
             return true;
     }
-
-    if (m % 2 == 0)
+    if (x % 2 == 0)
     {
         return false;
     }
+
+    var limit = (int)Math.Sqrt(x);
     
-    for (var i = 3; i * i <= m; i += 2)
+    for (var i = 3; i <= limit; i += 2)
     {
-        if (m % i == 0)
+        if (x % i == 0)
         {
             return false;
         }
@@ -37,11 +87,11 @@ bool IsPrime(int m)
     return true;
 }
 
-List<int> PrimeFactors(int m)
+IEnumerable<string> PrimeFactorization(int m)
 {
     var factors = new List<int>();
     var n = m;
-    
+
     for (var i = 2; i * i <= n; i++)
     {
         while (n % i == 0)
@@ -51,11 +101,13 @@ List<int> PrimeFactors(int m)
             n /= i;
         }
     }
-    
+
     if (n > 1)
     {
         factors.Add(n);
     }
-    
-    return factors;
+
+    return factors
+        .GroupBy(x => x)
+        .Select(g => $"{g.Key}^{g.Count()}");
 }

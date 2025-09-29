@@ -1,6 +1,6 @@
 ﻿(int, int)[] pairs =
 [
-    (2,4), (0,10), (10,12), (16,20), (25,45), (100,175), (375,400)
+    (6,8)
 ];
 
 foreach (var (a, b) in pairs)
@@ -20,4 +20,3 @@ int Gcd(int a, int b)
     
     return Math.Abs(a);
 }
-    

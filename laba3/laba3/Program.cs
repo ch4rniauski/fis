@@ -1,4 +1,4 @@
-﻿int[] array = [4, 6, 8, 10, 20, 40, 50, 100];
+﻿int[] array = [9];
 
 foreach (var m in array)
 {
@@ -27,7 +27,6 @@ ExtendedGcd ExtGcd(int a, int b)
     return new ExtendedGcd(extendedGcd.Y, extendedGcd.X - (a / b) * extendedGcd.Y, extendedGcd.Gcd);
 }
 
-// Находит обратимый элемент и его обратный
 void FindReversibleAndReverse(int m)
 {
     Console.WriteLine($"Z{m}:");
@@ -38,10 +37,8 @@ void FindReversibleAndReverse(int m)
     {
         if (Gcd(a, m) == 1)
         {
-            // Найти обратный элемент через расширенный алгоритм Евклида
             var extendedGcd = ExtGcd(a, m);
 
-            // Привести обратный к положительному остатку
             var inv = ((extendedGcd.X % m) + m) % m;
 
             Console.WriteLine($"\tОбратимый элемент: {a}, обратный: {inv}");

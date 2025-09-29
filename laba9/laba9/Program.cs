@@ -1,24 +1,22 @@
 ﻿using System.Numerics;
 
-int[] primesToCheck = [2, 3, 5, 7, 11, 13, 19, 23, 97, 193];
+Console.Write("Введите число p: ");
+var m = int.Parse(Console.ReadLine()!);
 
-foreach (var p in primesToCheck)
-{
-    CheckFermat(p);
-}
+CheckFermat(m);
 
-Console.WriteLine("Проверка обратного утверждения малой теоремы Ферма для m от 2 до 5000");
+Console.WriteLine($"Проверка обратного утверждения малой теоремы Ферма для p = {5000}:");
 CheckConverseFermat(5000);
 
 void CheckFermat(int p)
 {
-    Console.WriteLine($"p = {p}");
+    Console.WriteLine($"\nПроверка малой теоремы Ферма для p = {p}:");
+    
     for (var a = 1; a < p; a++)
     {
         var result = BigInteger.ModPow(a, p - 1, p);
-        
-        Console.WriteLine($"a = {a}, a^{p - 1} mod {p} = {result}");
-        
+        Console.WriteLine($"\ta = {a}, a^{p - 1} = {result} (mod {p})");
+
         if (result != 1)
         {
             Console.WriteLine("Ошибка! Малая теорема Ферма не выполнена\n");
@@ -26,11 +24,39 @@ void CheckFermat(int p)
             return;
         }
     }
-    
     Console.WriteLine("Все числа удовлетворяют малой теореме Ферма (значения равны 1)\n");
 }
 
-// Простая проверка простоты числа
+void CheckConverseFermat(int maxM)
+{
+    for (var m = 2; m <= maxM; m++)
+    {
+        var holdsForAllCoprimeA = true;
+
+        for (var a = 1; a < m; a++)
+        {
+            if (BigInteger.GreatestCommonDivisor(a, m) != 1)
+            {
+                continue;
+            }
+
+            var res = BigInteger.ModPow(a, m - 1, m);
+            
+            if (res != 1)
+            {
+                holdsForAllCoprimeA = false;
+                
+                break;
+            }
+        }
+
+        if (holdsForAllCoprimeA && !IsPrime(m))
+        {
+            Console.WriteLine($"\tЧисло {m} составное, но для всех взаимно простых a выполняется a^(m-1) = 1 (mod {m})");
+        }
+    }
+}
+
 bool IsPrime(int x)
 {
     switch (x)
@@ -40,7 +66,7 @@ bool IsPrime(int x)
         case 2:
             return true;
     }
-
+    
     if (x % 2 == 0)
     {
         return false;
@@ -57,36 +83,4 @@ bool IsPrime(int x)
     }
     
     return true;
-}
-
-// Проверка «обратного» утверждения Ферма для m от 2 до maxM
-void CheckConverseFermat(int maxM)
-{
-    for (var m = 2; m <= maxM; m++)
-    {
-        var holdsForAllCoprimeA = true;
-
-        for (var a = 1; a < m; a++)
-        {
-            if (BigInteger.GreatestCommonDivisor(a, m) != 1)
-            {
-                continue; // a и m не взаимно просты — не проверяем
-            }
-
-            var res = BigInteger.ModPow(a, m - 1, m);
-            
-            if (res != 1)
-            {
-                holdsForAllCoprimeA = false;
-                
-                break;
-            }
-        }
-
-        // Если условие выполнилось для всех взаимно простых a, но m составное — выводим
-        if (holdsForAllCoprimeA && !IsPrime(m))
-        {
-            Console.WriteLine($"Число {m} составное, но для всех взаимно простых a выполняется a^(m-1) ≡ 1 (mod {m})");
-        }
-    }
 }

@@ -1,37 +1,24 @@
-﻿int[] ms = [2, 4, 6, 8, 10, 15, 20, 23, 29, 40, 50, 100, 200];
+﻿Console.Write("Введите число m: ");
+var m = int.Parse(Console.ReadLine()!);
 
-foreach (var m in ms)
-{
-    CheckElements(m);
-}
+PrintTable(m);
 
-void CheckElements(int m)
+void PrintTable(int m)
 {
-    Console.WriteLine($"m = {m}");
-    
+    Console.WriteLine($"\nТаблица для Z{m}");
+    Console.WriteLine($"{"n",3} | {"НОД(n,m)",8} | {"Обратимый",9} | {"Делитель нуля",13}");
+
     for (var i = 0; i < m; i++)
     {
         var gcd = Gcd(i, m);
 
-        string elementType;
-        
-        if (i == 0)
-        {
-            elementType = "Нулевой элемент";
-        }
-        else if (gcd == 1)
-        {
-            elementType = "Обратимый элемент";
-        }
-        else
-        {
-            elementType = "Делитель нуля";
-        }
+        var isInvertible = i != 0 && gcd == 1;
+        var isZeroDivisor = i == 0 || gcd != 1;
 
-        Console.WriteLine($"i = {i}, НОД(i,m) = {gcd}, {elementType}");
+        Console.WriteLine(
+            $"{i,3} | {gcd,8} | {(isInvertible ? "Да" : "Нет"),9} | {(isZeroDivisor ? "Да" : "Нет"),13}"
+        );
     }
-
-    Console.WriteLine();
 }
 
 int Gcd(int a, int b)
@@ -44,5 +31,5 @@ int Gcd(int a, int b)
         a = temp;
     }
     
-    return a;
+    return Math.Abs(a);
 }

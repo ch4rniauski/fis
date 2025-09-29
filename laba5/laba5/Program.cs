@@ -1,41 +1,53 @@
-﻿int[] primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 97];
+﻿Console.Write("Введите число m: ");
+var m = int.Parse(Console.ReadLine()!);
 
-foreach (var p in primes)
+CheckField(m);
+
+void CheckField(int m)
 {
-    Console.WriteLine($"\nПроверка Z{p}:");
+    Console.Write($"\nПроверка Z{m}: ");
 
-    var isField = true;
-
-    // Проверка отсутствия нетривиальных делителей нуля и обратимости элементов
-    for (var a = 1; a < p; a++) // 0 не проверяем: 0 всегда делитель нуля
+    for (var a = 1; a < m; a++)
     {
-        var hasInverse = false;
-        
-        for (var b = 1; b < p; b++)
+        for (var b = 1; b < m; b++)
         {
-            var result = (a * b) % p;
+            var result = (a * b) % m;
 
-            // Если произведение дает 0 при ненулевых множителях, есть делитель нуля.
-            if (result == 0)
+            if (result == 0 && a != 0 && b != 0)
             {
-                isField = false;
-                Console.WriteLine($"\tНайден нетривиальный делитель нуля: {a}*{b} ≡ 0 (mod {p})");
+                Console.WriteLine("Найден нетривиальный делитель нуля");
             }
-
-            if (result == 1)
-            {
-                hasInverse = true; // Нашелся обратимый элемент
-            }
-        }
-        
-        if (!hasInverse)
-        {
-            isField = false;
-            Console.WriteLine($"\tНе найден обратный элемент для {a} в Z{p}");
         }
     }
 
-    Console.WriteLine(isField
-        ? $"\tZ{p} — поле: только тривиальный делитель 0 (нулевой элемент), остальные элементы обратимы."
-        : $"\tZ{p} не является полем.");
+    PrintTable(m);
+}
+
+void PrintTable(int m)
+{
+    Console.WriteLine($"\nТаблица для Z{m}");
+    Console.WriteLine($"{"n",3} | {"Обратимый",9} | {"Делитель нуля",13}");
+
+    for (var i = 0; i < m; i++)
+    {
+        var isInvertible = i != 0 && Gcd(i, m) == 1;
+        var isZeroDivisor = i == 0 || Gcd(i, m) != 1;
+
+        Console.WriteLine(
+            $"{i,3} | {(isInvertible ? "Да" : "Нет"),9} | {(isZeroDivisor ? "Да" : "Нет"),13}"
+        );
+    }
+}
+
+int Gcd(int a, int b)
+{
+    while (b != 0)
+    {
+        var t = b;
+        
+        b = a % b;
+        a = t;
+    }
+    
+    return Math.Abs(a);
 }
