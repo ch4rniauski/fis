@@ -13,20 +13,21 @@ foreach (var p in primes)
         
         for (var b = 1; b < p; b++)
         {
-            var product = (a * b) % p;
+            var result = (a * b) % p;
 
             // Если произведение дает 0 при ненулевых множителях, есть делитель нуля.
-            if (product == 0)
+            if (result == 0)
             {
                 isField = false;
                 Console.WriteLine($"\tНайден нетривиальный делитель нуля: {a}*{b} ≡ 0 (mod {p})");
             }
 
-            if (product == 1)
+            if (result == 1)
             {
                 hasInverse = true; // Нашелся обратимый элемент
             }
         }
+        
         if (!hasInverse)
         {
             isField = false;
@@ -34,12 +35,7 @@ foreach (var p in primes)
         }
     }
 
-    if (isField)
-    {
-        Console.WriteLine($"\tZ{p} — поле: только тривиальный делитель 0 (нулевой элемент), остальные элементы обратимы.");
-    }
-    else
-    {
-        Console.WriteLine($"\tZ{p} не является полем.");
-    }
+    Console.WriteLine(isField
+        ? $"\tZ{p} — поле: только тривиальный делитель 0 (нулевой элемент), остальные элементы обратимы."
+        : $"\tZ{p} не является полем.");
 }
