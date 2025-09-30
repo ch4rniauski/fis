@@ -20,4 +20,4 @@ int Gcd(int a, int b)
     
     return Math.Abs(a);
 }
-    
+ 
