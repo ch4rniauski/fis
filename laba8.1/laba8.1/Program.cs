@@ -10,8 +10,15 @@ var factorsB = PrimeFactorization(b);
 Console.WriteLine($"\nРазложение {a}: {FormatFactorization(factorsA)}");
 Console.WriteLine($"Разложение {b}: {FormatFactorization(factorsB)}");
 
-var gcd = CalculateGcdByPrimeFactors(factorsA, factorsB);
-var lcm = CalculateLcmByPrimeFactors(factorsA, factorsB);
+var gcd = CalculateByPrimeFactorsWithFunc(
+    factorsX: factorsA,
+    factorsY: factorsB,
+    func: Math.Min);
+
+var lcm = CalculateByPrimeFactorsWithFunc(
+    factorsX: factorsA,
+    factorsY: factorsB,
+    func: Math.Max);
 
 Console.WriteLine($"\nНОД({a},{b}) = {gcd} ({FormatFactorization(PrimeFactorization(gcd))})");
 Console.WriteLine($"НОК({a},{b}) = {lcm} ({FormatFactorization(PrimeFactorization(lcm))})");
@@ -21,27 +28,10 @@ Console.WriteLine($"\nПроверка тождества: НОД(a,b)*НОК(a,
                       ? "Выполняется"
                       : "Не выполняется")}");
 
-int CalculateGcdByPrimeFactors(Dictionary<int,int> factorsX, Dictionary<int,int> factorsY)
-{
-    var localGcd = 1;
-    
-    foreach (var p in factorsX
-                 .Keys
-                 .Concat(factorsY.Keys)
-                 .Distinct())
-    {
-        factorsX.TryGetValue(p, out var expX);
-        factorsY.TryGetValue(p, out var expY);
-        
-        var minExp = Math.Min(expX, expY);
-        
-        localGcd *= (int)Math.Pow(p, minExp);
-    }
-    
-    return localGcd;
-}
-
-int CalculateLcmByPrimeFactors(Dictionary<int,int> factorsX, Dictionary<int,int> factorsY)
+int CalculateByPrimeFactorsWithFunc(
+    Dictionary<int,int> factorsX,
+    Dictionary<int,int> factorsY,
+    Func<int, int, int> func)
 {
     var localLcm = 1;
     
@@ -53,7 +43,7 @@ int CalculateLcmByPrimeFactors(Dictionary<int,int> factorsX, Dictionary<int,int>
         factorsX.TryGetValue(p, out var expX);
         factorsY.TryGetValue(p, out var expY);
         
-        var maxExp = Math.Max(expX, expY);
+        var maxExp = func(expX, expY);
         
         localLcm *= (int)Math.Pow(p, maxExp);
     }
