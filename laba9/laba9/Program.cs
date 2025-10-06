@@ -5,9 +5,6 @@ var m = int.Parse(Console.ReadLine()!);
 
 CheckFermat(m);
 
-Console.WriteLine($"Проверка обратного утверждения малой теоремы Ферма для p = {5000}:");
-CheckConverseFermat(5000);
-
 void CheckFermat(int p)
 {
     Console.WriteLine($"\nПроверка малой теоремы Ферма для p = {p}:");
@@ -15,7 +12,7 @@ void CheckFermat(int p)
     for (var a = 1; a < p; a++)
     {
         var result = BigInteger.ModPow(a, p - 1, p);
-        Console.WriteLine($"\ta = {a}, a^{p - 1} = {result} (mod {p})");
+        Console.WriteLine($"\ta = {a}: a^{p - 1} = {result} (mod {p})");
 
         if (result != 1)
         {
@@ -25,62 +22,4 @@ void CheckFermat(int p)
         }
     }
     Console.WriteLine("Все числа удовлетворяют малой теореме Ферма (значения равны 1)\n");
-}
-
-void CheckConverseFermat(int maxM)
-{
-    for (var m = 2; m <= maxM; m++)
-    {
-        var holdsForAllCoprimeA = true;
-
-        for (var a = 1; a < m; a++)
-        {
-            if (BigInteger.GreatestCommonDivisor(a, m) != 1)
-            {
-                continue;
-            }
-
-            var res = BigInteger.ModPow(a, m - 1, m);
-            
-            if (res != 1)
-            {
-                holdsForAllCoprimeA = false;
-                
-                break;
-            }
-        }
-
-        if (holdsForAllCoprimeA && !IsPrime(m))
-        {
-            Console.WriteLine($"\tЧисло {m} составное, но для всех взаимно простых a выполняется a^(m-1) = 1 (mod {m})");
-        }
-    }
-}
-
-bool IsPrime(int x)
-{
-    switch (x)
-    {
-        case < 2:
-            return false;
-        case 2:
-            return true;
-    }
-    
-    if (x % 2 == 0)
-    {
-        return false;
-    }
-
-    var limit = (int)Math.Sqrt(x);
-    
-    for (var i = 3; i <= limit; i += 2)
-    {
-        if (x % i == 0)
-        {
-            return false;
-        }
-    }
-    
-    return true;
 }

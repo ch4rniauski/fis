@@ -33,7 +33,7 @@ int CalculateByPrimeFactorsWithFunc(
     Dictionary<int,int> factorsY,
     Func<int, int, int> func)
 {
-    var localLcm = 1;
+    var localNum = 1;
     
     foreach (var p in factorsX
                  .Keys
@@ -43,12 +43,12 @@ int CalculateByPrimeFactorsWithFunc(
         factorsX.TryGetValue(p, out var expX);
         factorsY.TryGetValue(p, out var expY);
         
-        var maxExp = func(expX, expY);
+        var requiredExp = func(expX, expY);
         
-        localLcm *= (int)Math.Pow(p, maxExp);
+        localNum *= (int)Math.Pow(p, requiredExp);
     }
     
-    return localLcm;
+    return localNum;
 }
 
 Dictionary<int, int> PrimeFactorization(int n)
