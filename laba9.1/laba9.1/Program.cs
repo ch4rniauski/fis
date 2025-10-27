@@ -3,7 +3,7 @@
 const int p = 5000;
 
 Console.WriteLine($"Проверка обратного утверждения малой теоремы Ферма для p = {p}:");
-CheckConverseFermat(5000);
+CheckConverseFermat(p);
 
 void CheckConverseFermat(int maxM)
 {
