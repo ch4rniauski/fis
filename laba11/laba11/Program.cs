@@ -1,61 +1,83 @@
 ﻿const int k = 100;
 
-SolveDiophantine(2, 3, 5, k);
-SolveDiophantine(3, -6, 23, k);
-SolveDiophantine(2, 4, 8, k);
-SolveDiophantine(17, 35, 95, k);
-SolveDiophantine(15, 95, -205, k);
-SolveDiophantine(-279, 2547, 15219, k);
-
-// Решение уравнения a*x + b*y = c
-static void SolveDiophantine(long a, long b, long c, int k)
+var testCases = new (long a, long b, long c)[]
 {
-    Console.WriteLine($"\nУравнение: {a}*x + {b}*y = {c}");
+    (2, 3, 5),
+    (3, -6, 23),
+    (2, 4, 8),
+    (17, 35, 95),
+    (15, 95, -205),
+    (-279, 2547, 15219),
+};
 
-    var (g, x0, y0) = ExtendedGcd(Math.Abs(a), Math.Abs(b));
+foreach (var (a, b, c) in testCases)
+{
+    SolveAndPrint(a, b, c, k);
+}
 
-    if (c % g != 0)
+static void SolveAndPrint(long a, long b, long c, int k)
+{
+    Console.WriteLine($"\nУравнение: {a}x + {b}y = {c}");
+
+    var gcd = Gcd(Math.Abs(a), Math.Abs(b));
+    Console.WriteLine($"gcd(|a|, |b|) = {gcd}");
+
+    if (c % gcd != 0)
     {
-        Console.WriteLine("Нет решений (gcd не делит c).");
+        Console.WriteLine("Решений нет, так как gcd(a, b) не делит c.");
         
         return;
     }
 
-    // Частное решение
-    x0 *= c / g;
-    y0 *= c / g;
+    var (x, y, _) = ExtendedGcd(a, b);
 
-    if (a < 0) x0 = -x0;
-    if (b < 0) y0 = -y0;
+    var factorC = c / gcd;
+    var x0 = x * factorC;
+    var y0 = y * factorC;
 
-    Console.WriteLine($"Частное решение: x0 = {x0}, y0 = {y0}");
+    var stepX = b / gcd;
+    var stepY = -a / gcd;
 
-    // Формулы общего решения:
-    // x = x0 + (b/g)*t
-    // y = y0 - (a/g)*t
-    var dx = b / g;
-    var dy = -a / g;
-
-    Console.WriteLine($"Общее решение: x = {x0} + {dx}*t, y = {y0} + {dy}*t");
-    Console.WriteLine($"\nПервые {k} решений:");
+    Console.WriteLine("Частное решение:");
+    Console.WriteLine($"\tx0 = {x0}");
+    Console.WriteLine($"\ty0 = {y0}");
     
-    for (var t = 0; t < k; t++)
+    Console.WriteLine("Общее решение:");
+    Console.WriteLine($"\tx = x0 + {stepX} * t, t ∈ Z");
+    Console.WriteLine($"\ty = y0 + {stepY} * t, t ∈ Z");
+
+    Console.WriteLine($"Первые {k} решений:");
+    
+    for (var i = 0; i < k; i++)
     {
-        var x = x0 + dx * t;
-        var y = y0 + dy * t;
+        long t = i;
+        var xi = x0 + stepX * t;
+        var yi = y0 + stepY * t;
         
-        Console.WriteLine($"t={t}: x={x}, y={y}");
+        Console.WriteLine($"t={t}: x={xi}, y={yi}");
     }
 }
 
-static (long gcd, long x, long y) ExtendedGcd(long a, long b)
+static long Gcd(long a, long b)
+{
+    while (b != 0)
+    {
+        var t = a % b;
+        
+        a = b; b = t;
+    }
+    
+    return Math.Abs(a);
+}
+
+static (long x, long y, long gcd) ExtendedGcd(long a, long b)
 {
     if (b == 0)
     {
-        return (a, 1, 0);
+        return (1, 0, a);
     }
+
+    var (x1, y1, gcd) = ExtendedGcd(b, a % b);
     
-    var (g, x1, y1) = ExtendedGcd(b, a % b);
-    
-    return (g, y1, x1 - (a / b) * y1);
+    return (y1, x1 - (a / b) * y1, gcd);
 }
